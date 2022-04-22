@@ -3,9 +3,20 @@
 
 #include <windows.h>
 
-#define MIDIKEYDOWN 0
-#define MIDIKEYKUP 1
+#define KEYDOWN 0
+#define KEYUP 1
 
-void onMidiKeyEvent(BYTE channel, BYTE note, BYTE event);
+#define MIDINOTE 0
+#define MIDICC 1
+#define MIDINOTINUSE 127
+
+typedef WORD MIDIKEY;
+
+void onMidiKeyEvent(BYTE channel, BYTE type, BYTE note, BYTE event);
+
+typedef struct keypair {
+    MIDIKEY midikey;
+    DWORD keyboardkey;
+} KeyPair;
 
 #endif

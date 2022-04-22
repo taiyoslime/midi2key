@@ -38,14 +38,30 @@ void CALLBACK MidiCallBack(
                 // 0x8x: note off
                 // 0x9x: note on
                 // 0xbx: MIDI CC
-
-                if (velocity == 0x00 || msgtype == 0x08) {
-                    onMidiKeyEvent(channel, note, MIDIKEYKUP);
-                    // note off
-                } else {
-                    // note on
-                    onMidiKeyEvent(channel, note, MIDIKEYDOWN);
+                BYTE type;
+                switch (msgtype) {
+                    case 0x8:
+                    case 0x9:
+                        type = MIDINOTE;
+                        break;
+                    case 0xb:
+                        type = MIDICC;
+                        break;
+                    default:
+                        type = MIDINOTINUSE;
+                        break;
                 }
+                
+                if (type != MIDINOTINUSE) {
+                    if (velocity == 0x00 || msgtype == 0x08) {
+                        // note off
+                        onMidiKeyEvent(channel, type, note, KEYUP);
+                    } else {
+                        // note on
+                        onMidiKeyEvent(channel, type, note, KEYDOWN);
+                    }
+                }
+
                 printf("status=%#x, note=%#x, velocity=%#x\n", status, note, velocity);
             }
             break;
